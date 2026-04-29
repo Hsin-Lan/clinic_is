@@ -265,31 +265,30 @@ def drug_delete(id):
     return redirect(url_for('drugs'))
 
 # ============ 数据备份 ============
-@app.route('/backup', methods=['GET', 'POST'])
+@app.route('/backup')
 def backup():
-    if request.method == 'POST':
-        # 获取数据库文件路径
-        if getattr(sys, 'frozen', False):
-            exe_dir = os.path.dirname(sys.executable)
-            db_path = os.path.join(exe_dir, 'clinic.db')
-        else:
-            db_path = os.path.join(os.path.dirname(__file__), 'clinic.db')
+    return render_template('backup.html')
 
-        if os.path.exists(db_path):
-            # 生成备份文件名
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            backup_filename = f'clinic_backup_{timestamp}.db'
+@app.route('/backup/download')
+def backup_download():
+    """下载数据库备份文件"""
+    # 获取数据库文件路径
+    if getattr(sys, 'frozen', False):
+        exe_dir = os.path.dirname(sys.executable)
+        db_path = os.path.join(exe_dir, 'clinic.db')
+    else:
+        # Flask-SQLAlchemy 默认将数据库放在 instance 文件夹
+        db_path = os.path.join(os.path.dirname(__file__), 'instance', 'clinic.db')
 
-            # 备份到用户选择的目录（默认为下载数据库同级目录）
-            backup_path = os.path.join(os.path.dirname(db_path), backup_filename)
-            shutil.copy2(db_path, backup_path)
-
-            flash(f'备份成功：{backup_filename}', 'success')
-        else:
-            flash('数据库文件不存在', 'danger')
+    if not os.path.exists(db_path):
+        flash('数据库文件不存在', 'danger')
         return redirect(url_for('backup'))
 
-    return render_template('backup.html')
+    # 生成备份文件名
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    backup_filename = f'clinic_backup_{timestamp}.db'
+
+    return send_file(db_path, as_attachment=True, download_name=backup_filename)
 
 # ============ API接口 ============
 @app.route('/api/patients/search')

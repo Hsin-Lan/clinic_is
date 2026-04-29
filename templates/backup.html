@@ -14,18 +14,16 @@
                 <h5 class="mb-0">备份数据库</h5>
             </div>
             <div class="card-body">
-                <p>点击下方按钮将创建当前数据库的备份文件。备份文件将保存在程序所在目录，文件名格式为 <code>clinic_backup_YYYYMMDD_HHMMSS.db</code>。</p>
+                <p>点击下方按钮将下载数据库备份文件，请选择保存位置。文件名格式为 <code>clinic_backup_YYYYMMDD_HHMMSS.db</code>。</p>
 
-                <form method="POST">
-                    <button type="submit" class="btn btn-primary btn-lg">💾 创建备份</button>
-                </form>
+                <a href="{{ url_for('backup_download') }}" class="btn btn-primary btn-lg">💾 创建备份</a>
 
                 <hr>
 
                 <h6>备份说明</h6>
                 <ul class="text-muted">
-                    <li>备份文件与主数据库文件在同一目录</li>
-                    <li>建议定期备份，并将备份文件复制到其他位置（如U盘、网盘）</li>
+                    <li>点击"创建备份"后会弹出保存对话框，请选择保存位置</li>
+                    <li>建议定期备份，并将备份文件保存到其他位置（如U盘、网盘）</li>
                     <li>恢复数据时，将备份文件重命名为 <code>clinic.db</code> 替换原文件即可</li>
                 </ul>
             </div>
