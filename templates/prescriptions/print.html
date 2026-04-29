@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>处方单</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "SimSun", "宋体", serif;
+            font-size: 14px;
+            padding: 20mm;
+            background: #fff;
+        }
+        .prescription-paper {
+            width: 210mm;
+            min-height: 140mm;
+            border: 2px solid #000;
+            padding: 10mm;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5mm;
+            margin-bottom: 5mm;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 8px;
+        }
+        .header .subtitle {
+            font-size: 14px;
+            margin-top: 2mm;
+        }
+        .rx-number {
+            text-align: right;
+            font-size: 12px;
+            margin-bottom: 3mm;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 3mm;
+            margin-bottom: 5mm;
+            font-size: 14px;
+        }
+        .info-grid div {
+            border-bottom: 1px solid #000;
+            padding: 1mm 0;
+        }
+        .info-grid label {
+            font-weight: normal;
+            color: #333;
+        }
+        .diagnosis-section {
+            margin-bottom: 5mm;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3mm;
+        }
+        .diagnosis-section label {
+            font-weight: bold;
+        }
+        .prescription-section {
+            min-height: 50mm;
+            margin-bottom: 5mm;
+            border: 1px solid #000;
+            padding: 3mm;
+        }
+        .prescription-section h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 3mm;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 1mm;
+        }
+        .prescription-content {
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3mm;
+            margin-bottom: 5mm;
+            font-size: 14px;
+        }
+        .footer-grid div {
+            border-bottom: 1px solid #000;
+            padding: 1mm 0;
+        }
+        .fee-section {
+            text-align: right;
+            font-size: 16px;
+            margin-top: 5mm;
+            padding-top: 3mm;
+            border-top: 1px solid #000;
+        }
+        .fee-section span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .no-print {
+            display: none !important;
+        }
+        @media print {
+            body { padding: 0; }
+            .prescription-paper {
+                border: 2px solid #000;
+                padding: 10mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="prescription-paper">
+        <div class="header">
+            <h1>处 方 笺</h1>
+            <div class="subtitle">门诊处方</div>
+        </div>
+
+        <div class="rx-number">
+            处方号：{{ prescription.id }} &nbsp;&nbsp; 日期：{{ prescription.date }}
+        </div>
+
+        <div class="info-grid">
+            <div><label>姓名：</label>{{ prescription.patient_name }}</div>
+            <div><label>性别：</label>{{ prescription.patient.gender if prescription.patient else '-' }}</div>
+            <div><label>年龄：</label>{{ prescription.patient_age if prescription.patient_age else '-' }}岁</div>
+            <div><label>电话：</label>{{ prescription.patient_phone }}</div>
+            <div><label>科别：</label>{{ prescription.department or '-' }}</div>
+            <div><label>医生：</label>{{ prescription.doctor or '-' }}</div>
+        </div>
+
+        <div class="diagnosis-section">
+            <label>诊断：</label>{{ prescription.diagnosis or '-' }}
+        </div>
+
+        <div class="prescription-section">
+            <h3>Rp.</h3>
+            <div class="prescription-content">{{ prescription.prescription or '-' }}</div>
+        </div>
+
+        <div class="footer-grid">
+            <div><label>配药：</label>{{ prescription.dispenser or '&nbsp;' }}</div>
+            <div><label>复核：</label>{{ prescription.reviewer or '&nbsp;' }}</div>
+            <div><label>药费：</label>¥{{ prescription.drug_fee }}</div>
+            <div><label>其他：</label>¥{{ prescription.other_fee }}</div>
+        </div>
+
+        <div class="fee-section">
+            合计金额：<span>¥{{ prescription.total_fee }}</span>
+        </div>
+    </div>
+
+    <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()" style="padding: 10px 30px; font-size: 16px; cursor: pointer;">打印处方</button>
+        <button onclick="window.close()" style="padding: 10px 30px; font-size: 16px; cursor: pointer; margin-left: 10px;">关闭</button>
+    </div>
+</body>
+</html>

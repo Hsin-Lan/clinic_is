@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}{% if prescription %}编辑处方{% else %}开具处方{% endif %} - 诊所信息系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{% if prescription %}编辑处方{% else %}开具处方{% endif %}</h2>
+    <a href="{{ url_for('prescriptions') }}" class="btn btn-outline-secondary">← 返回列表</a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    {% if prescription %}
+                    <input type="hidden" name="patient_id" value="{{ prescription.patient_id }}">
+                    {% else %}
+                    <!-- 病人选择 -->
+                    <div class="mb-4">
+                        <label class="form-label">选择病人 <span class="text-danger">*</span></label>
+                        {% if patient %}
+                        <div class="card bg-light">
+                            <div class="card-body py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ patient.name }}</strong>
+                                        <span class="text-muted ms-2">{{ patient.phone }}</span>
+                                        {% if patient.age %}<span class="text-muted ms-2">{{ patient.age }}岁</span>{% endif %}
+                                        {% if patient.gender %}<span class="text-muted ms-2">{{ patient.gender }}</span>{% endif %}
+                                        {% if patient.allergy %}
+                                        <span class="badge bg-warning text-dark ms-2">过敏: {{ patient.allergy }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <input type="hidden" name="patient_id" value="{{ patient.id }}">
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="patient_search" placeholder="输入姓名或电话搜索病人...">
+                            <input type="hidden" name="patient_id" id="patient_id" required>
+                        </div>
+                        <div id="patient_info" class="mt-2"></div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">科别</label>
+                            <select class="form-select" name="department">
+                                <option value="">请选择</option>
+                                <option value="内科" {% if prescription and prescription.department == '内科' %}selected{% endif %}>内科</option>
+                                <option value="外科" {% if prescription and prescription.department == '外科' %}selected{% endif %}>外科</option>
+                                <option value="儿科" {% if prescription and prescription.department == '儿科' %}selected{% endif %}>儿科</option>
+                                <option value="妇科" {% if prescription and prescription.department == '妇科' %}selected{% endif %}>妇科</option>
+                                <option value="中医科" {% if prescription and prescription.department == '中医科' %}selected{% endif %}>中医科</option>
+                                <option value="全科" {% if prescription and prescription.department == '全科' %}selected{% endif %}>全科</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">日期</label>
+                            <input type="date" class="form-control" name="date" value="{{ prescription.date if prescription else '' }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">医生</label>
+                            <input type="text" class="form-control" name="doctor" value="{{ prescription.doctor if prescription else '' }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">诊断</label>
+                        <textarea class="form-control" name="diagnosis" rows="2">{{ prescription.diagnosis if prescription else '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">处方明细</label>
+                        <textarea class="form-control" name="prescription" rows="4" placeholder="例如：阿莫西林胶囊 x2盒&#10;布洛芬片 x1盒">{{ prescription.prescription if prescription else '' }}</textarea>
+                        {% if drugs %}
+                        <div class="mt-2">
+                            <small class="text-muted">常用药品：</small>
+                            {% for drug in drugs %}
+                            <span class="badge bg-light text-dark me-1 drug-hint" data-name="{{ drug.name }}" style="cursor:pointer;">{{ drug.name }} ¥{{ drug.price }}/{{ drug.unit }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">配药</label>
+                            <input type="text" class="form-control" name="dispenser" value="{{ prescription.dispenser if prescription else '' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">复核</label>
+                            <input type="text" class="form-control" name="reviewer" value="{{ prescription.reviewer if prescription else '' }}">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">药费</label>
+                            <div class="input-group">
+                                <span class="input-group-text">¥</span>
+                                <input type="number" class="form-control" name="drug_fee" id="drug_fee" value="{{ prescription.drug_fee if prescription else '0' }}" step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">其他费用</label>
+                            <div class="input-group">
+                                <span class="input-group-text">¥</span>
+                                <input type="number" class="form-control" name="other_fee" id="other_fee" value="{{ prescription.other_fee if prescription else '0' }}" step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">合计</label>
+                            <div class="input-group">
+                                <span class="input-group-text">¥</span>
+                                <input type="text" class="form-control" id="total_fee" value="{{ prescription.total_fee if prescription else '0' }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        {% if prescription %}
+                        <a href="{{ url_for('prescription_print', id=prescription.id) }}" class="btn btn-outline-success" target="_blank">打印</a>
+                        {% endif %}
+                        <a href="{{ url_for('prescriptions') }}" class="btn btn-outline-secondary">取消</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 费用计算
+function calcTotal() {
+    const drugFee = parseFloat(document.getElementById('drug_fee').value) || 0;
+    const otherFee = parseFloat(document.getElementById('other_fee').value) || 0;
+    document.getElementById('total_fee').value = (drugFee + otherFee).toFixed(2);
+}
+document.getElementById('drug_fee').addEventListener('input', calcTotal);
+document.getElementById('other_fee').addEventListener('input', calcTotal);
+
+// 病人搜索
+const patientSearch = document.getElementById('patient_search');
+const patientIdInput = document.getElementById('patient_id');
+const patientInfo = document.getElementById('patient_info');
+
+if (patientSearch) {
+    let searchTimeout;
+    patientSearch.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const q = this.value.trim();
+        if (q.length < 1) {
+            patientInfo.innerHTML = '';
+            return;
+        }
+        searchTimeout = setTimeout(() => {
+            fetch(`/api/patients/search?q=${encodeURIComponent(q)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        patientInfo.innerHTML = '<div class="text-muted">未找到病人，请先添加病人</div>';
+                        return;
+                    }
+                    let html = '<div class="list-group">';
+                    data.forEach(p => {
+                        html += `<a href="javascript:void(0)" class="list-group-item list-group-item-action" onclick="selectPatient(${p.id}, '${p.name}', '${p.phone}', ${p.age || 'null'}, '${p.gender || ''}', '${(p.allergy || '').replace(/'/g, "\\'")}')">
+                            <strong>${p.name}</strong> <span class="text-muted">${p.phone}</span>
+                            ${p.age ? `<span class="text-muted ms-2">${p.age}岁</span>` : ''}
+                            ${p.gender ? `<span class="text-muted ms-2">${p.gender}</span>` : ''}
+                            ${p.allergy ? `<span class="badge bg-warning text-dark ms-2">过敏: ${p.allergy}</span>` : ''}
+                        </a>`;
+                    });
+                    html += '</div>';
+                    patientInfo.innerHTML = html;
+                });
+        }, 300);
+    });
+}
+
+function selectPatient(id, name, phone, age, gender, allergy) {
+    patientIdInput.value = id;
+    let info = `<strong>${name}</strong> <span class="text-muted">${phone}</span>`;
+    if (age) info += ` <span class="text-muted">${age}岁</span>`;
+    if (gender) info += ` <span class="text-muted">${gender}</span>`;
+    if (allergy) info += ` <span class="badge bg-warning text-dark ms-2">过敏: ${allergy}</span>`;
+    patientInfo.innerHTML = info;
+    patientSearch.value = name;
+}
+
+// 药品快捷输入
+document.querySelectorAll('.drug-hint').forEach(el => {
+    el.addEventListener('click', function() {
+        const textarea = document.querySelector('textarea[name="prescription"]');
+        const drugName = this.dataset.name;
+        textarea.value += (textarea.value ? '\n' : '') + drugName;
+    });
+});
+</script>
+{% endblock %}

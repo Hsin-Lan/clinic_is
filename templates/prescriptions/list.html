@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}处方管理 - 诊所信息系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>处方管理</h2>
+    <a href="{{ url_for('prescription_add') }}" class="btn btn-primary">➕ 开具处方</a>
+</div>
+
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="text" class="form-control" name="search" value="{{ search }}" placeholder="搜索姓名或电话...">
+    </div>
+    <div class="col-md-3">
+        <input type="date" class="form-control" name="date" value="{{ date_filter }}">
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-outline-secondary w-100" type="submit">筛选</button>
+    </div>
+    <div class="col-md-2">
+        {% if search or date_filter %}
+        <a href="{{ url_for('prescriptions') }}" class="btn btn-outline-secondary w-100">清除</a>
+        {% endif %}
+    </div>
+</form>
+
+{% if prescriptions %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>处方号</th>
+                <th>日期</th>
+                <th>姓名</th>
+                <th>电话</th>
+                <th>诊断</th>
+                <th>医生</th>
+                <th>费用</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rx in prescriptions %}
+            <tr>
+                <td>{{ rx.id }}</td>
+                <td>{{ rx.date }}</td>
+                <td>{{ rx.patient_name }}</td>
+                <td>{{ rx.patient_phone }}</td>
+                <td>{{ rx.diagnosis[:20] if rx.diagnosis else '-' }}{% if rx.diagnosis and rx.diagnosis|length > 20 %}...{% endif %}</td>
+                <td>{{ rx.doctor or '-' }}</td>
+                <td>¥{{ rx.total_fee }}</td>
+                <td>
+                    <a href="{{ url_for('prescription_print', id=rx.id) }}" class="btn btn-sm btn-outline-info" target="_blank">查看/打印</a>
+                    <a href="{{ url_for('prescription_edit', id=rx.id) }}" class="btn btn-sm btn-outline-primary">编辑</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">暂无处方数据。点击"开具处方"开始录入。</div>
+{% endif %}
+{% endblock %}

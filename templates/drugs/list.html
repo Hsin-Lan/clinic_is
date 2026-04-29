@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}药品管理 - 诊所信息系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>药品管理</h2>
+    <a href="{{ url_for('drug_add') }}" class="btn btn-primary">➕ 添加药品</a>
+</div>
+
+<form method="GET" class="mb-4">
+    <div class="input-group">
+        <input type="text" class="form-control" name="search" value="{{ search }}" placeholder="搜索药品名称...">
+        <button class="btn btn-outline-secondary" type="submit">搜索</button>
+        {% if search %}
+        <a href="{{ url_for('drugs') }}" class="btn btn-outline-secondary">清除</a>
+        {% endif %}
+    </div>
+</form>
+
+{% if drugs %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>药品名称</th>
+                <th>价格</th>
+                <th>单位</th>
+                <th>常用</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drug in drugs %}
+            <tr>
+                <td>{{ drug.name }}</td>
+                <td>¥{{ drug.price }}</td>
+                <td>{{ drug.unit }}</td>
+                <td>
+                    {% if drug.is_common %}
+                    <span class="badge bg-success">是</span>
+                    {% else %}
+                    <span class="badge bg-secondary">否</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('drug_edit', id=drug.id) }}" class="btn btn-sm btn-outline-primary">编辑</a>
+                    <form method="POST" action="{{ url_for('drug_delete', id=drug.id) }}" style="display:inline;" onsubmit="return confirm('确定删除？')">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">暂无药品数据。点击"添加药品"开始录入。</div>
+{% endif %}
+{% endblock %}

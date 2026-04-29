@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}病人管理 - 诊所信息系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>病人管理</h2>
+    <a href="{{ url_for('patient_add') }}" class="btn btn-primary">➕ 添加病人</a>
+</div>
+
+<form method="GET" class="mb-4">
+    <div class="input-group">
+        <input type="text" class="form-control" name="search" value="{{ search }}" placeholder="搜索姓名或电话...">
+        <button class="btn btn-outline-secondary" type="submit">搜索</button>
+        {% if search %}
+        <a href="{{ url_for('patients') }}" class="btn btn-outline-secondary">清除</a>
+        {% endif %}
+    </div>
+</form>
+
+{% if patients %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>姓名</th>
+                <th>电话</th>
+                <th>性别</th>
+                <th>年龄</th>
+                <th>住址</th>
+                <th>过敏史</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td><a href="{{ url_for('patient_detail', id=patient.id) }}">{{ patient.name }}</a></td>
+                <td>{{ patient.phone }}</td>
+                <td>{{ patient.gender or '-' }}</td>
+                <td>{{ patient.age or '-' }}</td>
+                <td>{{ patient.address or '-' }}</td>
+                <td>
+                    {% if patient.allergy %}
+                    <span class="badge bg-warning text-dark">{{ patient.allergy[:20] }}{% if patient.allergy|length > 20 %}...{% endif %}</span>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('patient_detail', id=patient.id) }}" class="btn btn-sm btn-outline-info">查看</a>
+                    <a href="{{ url_for('patient_edit', id=patient.id) }}" class="btn btn-sm btn-outline-primary">编辑</a>
+                    <a href="{{ url_for('prescription_add', patient_id=patient.id) }}" class="btn btn-sm btn-outline-success">开处方</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">暂无病人数据。点击"添加病人"开始录入。</div>
+{% endif %}
+{% endblock %}

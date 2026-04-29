@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - 诊所信息系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">病人总数</h5>
+                <h2 class="display-4">{{ patient_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">处方总数</h5>
+                <h2 class="display-4">{{ prescription_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">今日处方</h5>
+                <h2 class="display-4">{{ today_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">药品数量</h5>
+                <h2 class="display-4">{{ drug_count }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">快速操作</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('prescription_add') }}" class="btn btn-primary btn-lg">📝 开具处方</a>
+                    <a href="{{ url_for('patient_add') }}" class="btn btn-outline-primary">➕ 添加病人</a>
+                    <a href="{{ url_for('drug_add') }}" class="btn btn-outline-primary">➕ 添加药品</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">系统说明</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li>👤 <strong>病人管理</strong>：管理病人基本信息，以电话为唯一标识</li>
+                    <li>📋 <strong>处方管理</strong>：开具处方、打印处方单</li>
+                    <li>💊 <strong>药品管理</strong>：管理常用药品及价格</li>
+                    <li>💾 <strong>数据备份</strong>：导出数据库备份文件</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

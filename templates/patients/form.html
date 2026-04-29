@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{% if patient %}编辑病人{% else %}添加病人{% endif %} - 诊所信息系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{% if patient %}编辑病人{% else %}添加病人{% endif %}</h2>
+    <a href="{{ url_for('patients') }}" class="btn btn-outline-secondary">← 返回列表</a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">姓名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" value="{{ patient.name if patient else '' }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">电话 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="phone" value="{{ patient.phone if patient else '' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">性别</label>
+                            <select class="form-select" name="gender">
+                                <option value="">请选择</option>
+                                <option value="男" {% if patient and patient.gender == '男' %}selected{% endif %}>男</option>
+                                <option value="女" {% if patient and patient.gender == '女' %}selected{% endif %}>女</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">年龄</label>
+                            <input type="number" class="form-control" name="age" value="{{ patient.age if patient else '' }}" min="0" max="150">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">住址</label>
+                        <input type="text" class="form-control" name="address" value="{{ patient.address if patient else '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">过敏史</label>
+                        <textarea class="form-control" name="allergy" rows="2">{{ patient.allergy if patient else '' }}</textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <a href="{{ url_for('patients') }}" class="btn btn-outline-secondary">取消</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

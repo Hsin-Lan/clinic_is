@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{% if drug %}编辑药品{% else %}添加药品{% endif %} - 诊所信息系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{% if drug %}编辑药品{% else %}添加药品{% endif %}</h2>
+    <a href="{{ url_for('drugs') }}" class="btn btn-outline-secondary">← 返回列表</a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">药品名称 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="name" value="{{ drug.name if drug else '' }}" required>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">价格 <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">¥</span>
+                                <input type="number" class="form-control" name="price" value="{{ drug.price if drug else '' }}" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">单位</label>
+                            <input type="text" class="form-control" name="unit" value="{{ drug.unit if drug else '盒' }}" placeholder="盒/瓶/袋">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_common" id="is_common" {% if drug is none or drug.is_common %}checked{% endif %}>
+                            <label class="form-check-label" for="is_common">
+                                设为常用药品（开处方时快速选择）
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <a href="{{ url_for('drugs') }}" class="btn btn-outline-secondary">取消</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

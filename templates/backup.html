@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}数据备份 - 诊所信息系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>数据备份</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">备份数据库</h5>
+            </div>
+            <div class="card-body">
+                <p>点击下方按钮将创建当前数据库的备份文件。备份文件将保存在程序所在目录，文件名格式为 <code>clinic_backup_YYYYMMDD_HHMMSS.db</code>。</p>
+
+                <form method="POST">
+                    <button type="submit" class="btn btn-primary btn-lg">💾 创建备份</button>
+                </form>
+
+                <hr>
+
+                <h6>备份说明</h6>
+                <ul class="text-muted">
+                    <li>备份文件与主数据库文件在同一目录</li>
+                    <li>建议定期备份，并将备份文件复制到其他位置（如U盘、网盘）</li>
+                    <li>恢复数据时，将备份文件重命名为 <code>clinic.db</code> 替换原文件即可</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">数据恢复</h5>
+            </div>
+            <div class="card-body">
+                <p>如需恢复数据，请按以下步骤操作：</p>
+                <ol>
+                    <li>关闭程序</li>
+                    <li>将备份文件（如 <code>clinic_backup_20240101_120000.db</code>）重命名为 <code>clinic.db</code></li>
+                    <li>用重命名后的文件替换程序目录下的 <code>clinic.db</code></li>
+                    <li>重新启动程序</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
