@@ -53,6 +53,16 @@
             font-weight: normal;
             color: #333;
         }
+        .allergy-section {
+            margin-bottom: 5mm;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3mm;
+            color: #c00;
+        }
+        .allergy-section label {
+            font-weight: bold;
+            color: #c00;
+        }
         .diagnosis-section {
             margin-bottom: 5mm;
             border-bottom: 1px solid #000;
@@ -132,6 +142,10 @@
             <div><label>医生：</label>{{ prescription.doctor or '-' }}</div>
         </div>
 
+        <div class="allergy-section">
+            <label>过敏史：</label>{{ prescription.patient.allergy if prescription.patient and prescription.patient.allergy else '无' }}
+        </div>
+
         <div class="diagnosis-section">
             <label>诊断：</label>{{ prescription.diagnosis or '-' }}
         </div>
@@ -142,8 +156,8 @@
         </div>
 
         <div class="footer-grid">
-            <div><label>配药：</label>{{ prescription.dispenser or '&nbsp;' }}</div>
-            <div><label>复核：</label>{{ prescription.reviewer or '&nbsp;' }}</div>
+            <div><label>配药：</label>{{ prescription.dispenser or '' }}</div>
+            <div><label>复核：</label>{{ prescription.reviewer or '' }}</div>
             <div><label>药费：</label>¥{{ prescription.drug_fee }}</div>
             <div><label>其他：</label>¥{{ prescription.other_fee }}</div>
         </div>
