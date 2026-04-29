@@ -130,7 +130,9 @@ def prescriptions():
         query = query.filter(Prescription.date == date_filter)
 
     prescriptions = query.order_by(Prescription.date.desc(), Prescription.id.desc()).all()
-    return render_template('prescriptions/list.html', prescriptions=prescriptions, search=search, date_filter=date_filter)
+    # 日期筛选框默认显示当天
+    display_date = date_filter if date_filter else datetime.now().strftime('%Y-%m-%d')
+    return render_template('prescriptions/list.html', prescriptions=prescriptions, search=search, date_filter=display_date)
 
 @app.route('/prescriptions/add', methods=['GET', 'POST'])
 def prescription_add():
@@ -166,7 +168,7 @@ def prescription_add():
     patient_id = request.args.get('patient_id', type=int)
     patient = Patient.query.get(patient_id) if patient_id else None
     drugs = Drug.query.filter_by(is_common=True).all()
-    return render_template('prescriptions/form.html', patient=patient, drugs=drugs, prescription=None)
+    return render_template('prescriptions/form.html', patient=patient, drugs=drugs, prescription=None, today=datetime.now().strftime('%Y-%m-%d'))
 
 @app.route('/prescriptions/<int:id>/edit', methods=['GET', 'POST'])
 def prescription_edit(id):
@@ -190,7 +192,7 @@ def prescription_edit(id):
         return redirect(url_for('prescriptions'))
 
     drugs = Drug.query.filter_by(is_common=True).all()
-    return render_template('prescriptions/form.html', prescription=prescription, drugs=drugs, patient=None)
+    return render_template('prescriptions/form.html', prescription=prescription, drugs=drugs, patient=None, today=datetime.now().strftime('%Y-%m-%d'))
 
 @app.route('/prescriptions/<int:id>/delete', methods=['POST'])
 def prescription_delete(id):

@@ -61,7 +61,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">日期</label>
-                            <input type="date" class="form-control" name="date" value="{{ prescription.date if prescription else '' }}" required>
+                            <input type="date" class="form-control" name="date" value="{{ prescription.date.strftime('%Y-%m-%d') if prescription else today }}" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">医生</label>
