@@ -15,6 +15,22 @@
                 <form method="POST">
                     {% if prescription %}
                     <input type="hidden" name="patient_id" value="{{ prescription.patient_id }}">
+                    <!-- 病人信息（只读） -->
+                    <div class="mb-4">
+                        <label class="form-label">病人信息</label>
+                        <div class="card bg-light">
+                            <div class="card-body py-2">
+                                <div>
+                                    <strong>{{ prescription.patient_name }}</strong>
+                                    <span class="text-muted ms-2">{{ prescription.patient_phone }}</span>
+                                    {% if prescription.patient_age %}<span class="text-muted ms-2">{{ prescription.patient_age }}岁</span>{% endif %}
+                                    {% if prescription.patient.allergy %}
+                                    <span class="badge bg-warning text-dark ms-2">过敏: {{ prescription.patient.allergy }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% else %}
                     <!-- 病人选择 -->
                     <div class="mb-4">
