@@ -170,36 +170,13 @@ def prescription_add():
     drugs = Drug.query.filter_by(is_common=True).all()
     return render_template('prescriptions/form.html', patient=patient, drugs=drugs, prescription=None, today=datetime.now().strftime('%Y-%m-%d'))
 
-@app.route('/prescriptions/<int:id>/edit', methods=['GET', 'POST'])
-def prescription_edit(id):
+@app.route('/prescriptions/<int:id>/void', methods=['POST'])
+def prescription_void(id):
+    """废弃处方"""
     prescription = Prescription.query.get_or_404(id)
-    if request.method == 'POST':
-        drug_fee = Decimal(request.form.get('drug_fee', '0') or '0')
-        other_fee = Decimal(request.form.get('other_fee', '0') or '0')
-
-        prescription.department = request.form.get('department', '').strip()
-        prescription.date = datetime.strptime(request.form.get('date'), '%Y-%m-%d').date() if request.form.get('date') else prescription.date
-        prescription.diagnosis = request.form.get('diagnosis', '').strip()
-        prescription.prescription = request.form.get('prescription', '').strip()
-        prescription.doctor = request.form.get('doctor', '').strip()
-        prescription.dispenser = request.form.get('dispenser', '').strip()
-        prescription.reviewer = request.form.get('reviewer', '').strip()
-        prescription.drug_fee = drug_fee
-        prescription.other_fee = other_fee
-        prescription.total_fee = drug_fee + other_fee
-        db.session.commit()
-        flash('处方更新成功', 'success')
-        return redirect(url_for('prescriptions'))
-
-    drugs = Drug.query.filter_by(is_common=True).all()
-    return render_template('prescriptions/form.html', prescription=prescription, drugs=drugs, patient=None, today=datetime.now().strftime('%Y-%m-%d'))
-
-@app.route('/prescriptions/<int:id>/delete', methods=['POST'])
-def prescription_delete(id):
-    prescription = Prescription.query.get_or_404(id)
-    db.session.delete(prescription)
+    prescription.is_void = True
     db.session.commit()
-    flash('处方删除成功', 'success')
+    flash('处方已废弃', 'warning')
     return redirect(url_for('prescriptions'))
 
 @app.route('/prescriptions/<int:id>/print')

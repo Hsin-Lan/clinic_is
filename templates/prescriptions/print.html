@@ -7,43 +7,80 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: "SimSun", "宋体", serif;
-            font-size: 14px;
-            padding: 20mm;
+            font-size: 12px;
+            padding: 10mm;
             background: #fff;
         }
         .prescription-paper {
-            width: 210mm;
-            min-height: 140mm;
+            width: 148mm;
+            min-height: 210mm;
             border: 2px solid #000;
-            padding: 10mm;
+            padding: 8mm;
             margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .void-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 60px;
+            color: rgba(200, 0, 0, 0.3);
+            font-weight: bold;
+            letter-spacing: 15px;
+            pointer-events: none;
+            z-index: 10;
         }
         .header {
             text-align: center;
             border-bottom: 2px solid #000;
-            padding-bottom: 5mm;
-            margin-bottom: 5mm;
+            padding-bottom: 4mm;
+            margin-bottom: 4mm;
+            position: relative;
         }
         .header h1 {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            letter-spacing: 8px;
+            letter-spacing: 6px;
+        }
+        .header .subtitle-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-top: 2mm;
         }
         .header .subtitle {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 4px;
+        }
+        .header .type-badge {
+            position: absolute;
+            right: 0;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 14px;
-            margin-top: 2mm;
+            font-weight: bold;
         }
         .rx-number {
             text-align: right;
-            font-size: 12px;
-            margin-bottom: 3mm;
+            font-size: 11px;
+            margin-bottom: 2mm;
         }
         .info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 3mm;
-            margin-bottom: 5mm;
-            font-size: 14px;
+            grid-template-columns: 2fr 0.8fr 0.8fr 1.4fr;
+            gap: 2mm;
+            margin-bottom: 2mm;
+            font-size: 12px;
         }
         .info-grid div {
             border-bottom: 1px solid #000;
@@ -53,117 +90,155 @@
             font-weight: normal;
             color: #333;
         }
-        .allergy-section {
-            margin-bottom: 5mm;
+        .info-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2mm;
+            margin-bottom: 2mm;
+            font-size: 12px;
+        }
+        .info-grid-2 div {
             border-bottom: 1px solid #000;
-            padding-bottom: 3mm;
+            padding: 1mm 0;
+        }
+        .info-grid-2 label {
+            font-weight: normal;
+            color: #333;
+        }
+        .info-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2mm;
+            margin-bottom: 3mm;
+            font-size: 12px;
+        }
+        .info-grid-3 div {
+            border-bottom: 1px solid #000;
+            padding: 1mm 0;
+        }
+        .info-grid-3 label {
+            font-weight: bold;
+        }
+        .allergy-section {
             color: #c00;
         }
         .allergy-section label {
             font-weight: bold;
             color: #c00;
         }
-        .diagnosis-section {
-            margin-bottom: 5mm;
-            border-bottom: 1px solid #000;
-            padding-bottom: 3mm;
-        }
         .diagnosis-section label {
             font-weight: bold;
         }
         .prescription-section {
-            min-height: 50mm;
-            margin-bottom: 5mm;
+            flex: 1;
+            margin-bottom: 3mm;
             border: 1px solid #000;
-            padding: 3mm;
+            padding: 2mm;
         }
         .prescription-section h3 {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 3mm;
+            margin-bottom: 2mm;
             border-bottom: 1px dashed #ccc;
             padding-bottom: 1mm;
         }
         .prescription-content {
             white-space: pre-wrap;
-            line-height: 1.8;
+            line-height: 1.6;
+            font-size: 12px;
         }
         .footer-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 3mm;
-            margin-bottom: 5mm;
-            font-size: 14px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2mm;
+            margin-bottom: 3mm;
+            font-size: 12px;
         }
         .footer-grid div {
             border-bottom: 1px solid #000;
             padding: 1mm 0;
         }
-        .fee-section {
-            text-align: right;
-            font-size: 16px;
-            margin-top: 5mm;
-            padding-top: 3mm;
-            border-top: 1px solid #000;
+        .fee-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2mm;
+            font-size: 12px;
         }
-        .fee-section span {
+        .fee-grid div {
+            padding: 1mm 0;
+        }
+        .fee-grid .total {
+            text-align: right;
+        }
+        .fee-grid .total span {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
         }
         @media print {
             body { padding: 0; }
             .prescription-paper {
                 border: 2px solid #000;
-                padding: 10mm;
+                padding: 8mm;
             }
             .no-print {
                 display: none !important;
+            }
+            @page {
+                size: A5;
+                margin: 0;
             }
         }
     </style>
 </head>
 <body>
     <div class="prescription-paper">
+        {% if prescription.is_void %}
+        <div class="void-watermark">已废弃</div>
+        {% endif %}
         <div class="header">
             <h1>蓝更伟个体诊所</h1>
-            <div class="subtitle" style="font-size: 20px; font-weight: bold; letter-spacing: 4px;">处 方 笺</div>
+            <div class="subtitle-row">
+                <span class="subtitle">处 方 笺</span>
+                <span class="type-badge">普</span>
+            </div>
         </div>
 
         <div class="rx-number">
-            处方号：{{ prescription.id }} &nbsp;&nbsp; 日期：{{ prescription.date }}
+            处方号：{{ prescription.id }}
         </div>
 
         <div class="info-grid">
             <div><label>姓名：</label>{{ prescription.patient_name }}</div>
-            <div><label>性别：</label>{{ prescription.patient.gender if prescription.patient else '-' }}</div>
-            <div><label>年龄：</label>{{ prescription.patient_age if prescription.patient_age else '-' }}岁</div>
-            <div><label>电话：</label>{{ prescription.patient_phone }}</div>
-            <div><label>科别：</label>{{ prescription.department or '-' }}</div>
-            <div><label>医生：</label>{{ prescription.doctor or '-' }}</div>
+            <div><label>性别：</label>{{ prescription.patient.gender if prescription.patient else '' }}</div>
+            <div><label>年龄：</label>{{ prescription.patient_age if prescription.patient_age else '' }}岁</div>
+            <div><label>科别：</label>{{ prescription.department or '' }}</div>
         </div>
 
-        <div class="allergy-section">
-            <label>过敏史：</label>{{ prescription.patient.allergy if prescription.patient and prescription.patient.allergy else '无' }}
+        <div class="info-grid-2">
+            <div><label>住址（电话）：</label>{{ prescription.patient.address if prescription.patient and prescription.patient.address else prescription.patient_phone }}</div>
+            <div><label>日期：</label>{{ prescription.date }}</div>
         </div>
 
-        <div class="diagnosis-section">
-            <label>诊断：</label>{{ prescription.diagnosis or '-' }}
+        <div class="info-grid-3">
+            <div class="diagnosis-section"><label>诊断：</label>{{ prescription.diagnosis or '' }}</div>
+            <div class="allergy-section"><label>过敏史：</label>{{ prescription.patient.allergy if prescription.patient and prescription.patient.allergy else '无' }}</div>
         </div>
 
         <div class="prescription-section">
             <h3>Rp.</h3>
-            <div class="prescription-content">{{ prescription.prescription or '-' }}</div>
+            <div class="prescription-content">{{ prescription.prescription or '' }}</div>
         </div>
 
         <div class="footer-grid">
+            <div><label>医生：</label>{{ prescription.doctor or '' }}</div>
             <div><label>配药：</label>{{ prescription.dispenser or '' }}</div>
             <div><label>复核：</label>{{ prescription.reviewer or '' }}</div>
-            <div><label>药费：</label>¥{{ prescription.drug_fee }}</div>
-            <div><label>其他：</label>¥{{ prescription.other_fee }}</div>
         </div>
 
-        <div class="fee-section">
-            合计金额：<span>¥{{ prescription.total_fee }}</span>
+        <div class="fee-grid">
+            <div><label>药费：</label>¥{{ prescription.drug_fee }}</div>
+            <div><label>其他：</label>¥{{ prescription.other_fee }}</div>
+            <div class="total">合计：<span>¥{{ prescription.total_fee }}</span></div>
         </div>
     </div>
 

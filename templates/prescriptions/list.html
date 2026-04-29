@@ -37,12 +37,13 @@
                 <th>诊断</th>
                 <th>医生</th>
                 <th>费用</th>
+                <th>状态</th>
                 <th>操作</th>
             </tr>
         </thead>
         <tbody>
             {% for rx in prescriptions %}
-            <tr>
+            <tr {% if rx.is_void %}class="table-secondary"{% endif %}>
                 <td>{{ rx.id }}</td>
                 <td>{{ rx.date }}</td>
                 <td>{{ rx.patient_name }}</td>
@@ -50,9 +51,14 @@
                 <td>{{ rx.diagnosis[:20] if rx.diagnosis else '-' }}{% if rx.diagnosis and rx.diagnosis|length > 20 %}...{% endif %}</td>
                 <td>{{ rx.doctor or '-' }}</td>
                 <td>¥{{ rx.total_fee }}</td>
+                <td>{% if rx.is_void %}<span class="badge bg-secondary">已废弃</span>{% else %}<span class="badge bg-success">有效</span>{% endif %}</td>
                 <td>
                     <a href="{{ url_for('prescription_print', id=rx.id) }}" class="btn btn-sm btn-outline-info" target="_blank">查看/打印</a>
-                    <a href="{{ url_for('prescription_edit', id=rx.id) }}" class="btn btn-sm btn-outline-primary">编辑</a>
+                    {% if not rx.is_void %}
+                    <form method="POST" action="{{ url_for('prescription_void', id=rx.id) }}" style="display:inline;" onsubmit="return confirm('确定要废弃该处方吗？');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">废弃</button>
+                    </form>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

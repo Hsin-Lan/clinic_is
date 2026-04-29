@@ -43,6 +43,7 @@ class Prescription(db.Model):
     drug_fee = db.Column(db.Numeric(10, 2), default=0, comment='药费')
     other_fee = db.Column(db.Numeric(10, 2), default=0, comment='其他费用')
     total_fee = db.Column(db.Numeric(10, 2), default=0, comment='合计')
+    is_void = db.Column(db.Boolean, default=False, comment='是否废弃')
     created_at = db.Column(db.DateTime, default=datetime.now, comment='创建时间')
 
     def __repr__(self):

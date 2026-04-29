@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}{% if prescription %}编辑处方{% else %}开具处方{% endif %} - 诊所信息系统{% endblock %}
+{% block title %}开具处方 - 诊所信息系统{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>{% if prescription %}编辑处方{% else %}开具处方{% endif %}</h2>
+    <h2>开具处方</h2>
     <a href="{{ url_for('prescriptions') }}" class="btn btn-outline-secondary">← 返回列表</a>
 </div>
 
@@ -13,25 +13,6 @@
         <div class="card">
             <div class="card-body">
                 <form method="POST">
-                    {% if prescription %}
-                    <input type="hidden" name="patient_id" value="{{ prescription.patient_id }}">
-                    <!-- 病人信息（只读） -->
-                    <div class="mb-4">
-                        <label class="form-label">病人信息</label>
-                        <div class="card bg-light">
-                            <div class="card-body py-2">
-                                <div>
-                                    <strong>{{ prescription.patient_name }}</strong>
-                                    <span class="text-muted ms-2">{{ prescription.patient_phone }}</span>
-                                    {% if prescription.patient_age %}<span class="text-muted ms-2">{{ prescription.patient_age }}岁</span>{% endif %}
-                                    {% if prescription.patient.allergy %}
-                                    <span class="badge bg-warning text-dark ms-2">过敏: {{ prescription.patient.allergy }}</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% else %}
                     <!-- 病人选择 -->
                     <div class="mb-4">
                         <label class="form-label">选择病人 <span class="text-danger">*</span></label>
@@ -60,39 +41,38 @@
                         <div id="patient_info" class="mt-2"></div>
                         {% endif %}
                     </div>
-                    {% endif %}
 
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label">科别</label>
                             <select class="form-select" name="department">
                                 <option value="">请选择</option>
-                                <option value="内科" {% if prescription and prescription.department == '内科' %}selected{% endif %}>内科</option>
-                                <option value="外科" {% if prescription and prescription.department == '外科' %}selected{% endif %}>外科</option>
-                                <option value="儿科" {% if prescription and prescription.department == '儿科' %}selected{% endif %}>儿科</option>
-                                <option value="妇科" {% if prescription and prescription.department == '妇科' %}selected{% endif %}>妇科</option>
-                                <option value="中医科" {% if prescription and prescription.department == '中医科' %}selected{% endif %}>中医科</option>
-                                <option value="全科" {% if prescription and prescription.department == '全科' %}selected{% endif %}>全科</option>
+                                <option value="内科">内科</option>
+                                <option value="外科">外科</option>
+                                <option value="儿科">儿科</option>
+                                <option value="妇科">妇科</option>
+                                <option value="中医科">中医科</option>
+                                <option value="全科">全科</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">日期</label>
-                            <input type="date" class="form-control" name="date" value="{{ prescription.date.strftime('%Y-%m-%d') if prescription else today }}" required>
+                            <input type="date" class="form-control" name="date" value="{{ today }}" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">医生</label>
-                            <input type="text" class="form-control" name="doctor" value="{{ prescription.doctor if prescription else '' }}">
+                            <input type="text" class="form-control" name="doctor" value="">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">诊断</label>
-                        <textarea class="form-control" name="diagnosis" rows="2">{{ prescription.diagnosis if prescription else '' }}</textarea>
+                        <textarea class="form-control" name="diagnosis" rows="2"></textarea>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">处方明细</label>
-                        <textarea class="form-control" name="prescription" rows="4" placeholder="例如：阿莫西林胶囊 x2盒&#10;布洛芬片 x1盒">{{ prescription.prescription if prescription else '' }}</textarea>
+                        <textarea class="form-control" name="prescription" rows="4" placeholder="例如：阿莫西林胶囊 x2盒&#10;布洛芬片 x1盒"></textarea>
                         {% if drugs %}
                         <div class="mt-2">
                             <small class="text-muted">常用药品：</small>
@@ -106,11 +86,11 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label">配药</label>
-                            <input type="text" class="form-control" name="dispenser" value="{{ prescription.dispenser if prescription else '' }}">
+                            <input type="text" class="form-control" name="dispenser" value="">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">复核</label>
-                            <input type="text" class="form-control" name="reviewer" value="{{ prescription.reviewer if prescription else '' }}">
+                            <input type="text" class="form-control" name="reviewer" value="">
                         </div>
                     </div>
 
@@ -121,30 +101,27 @@
                             <label class="form-label">药费</label>
                             <div class="input-group">
                                 <span class="input-group-text">¥</span>
-                                <input type="number" class="form-control" name="drug_fee" id="drug_fee" value="{{ prescription.drug_fee if prescription else '0' }}" step="0.01" min="0">
+                                <input type="number" class="form-control" name="drug_fee" id="drug_fee" value="0" step="0.01" min="0">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">其他费用</label>
                             <div class="input-group">
                                 <span class="input-group-text">¥</span>
-                                <input type="number" class="form-control" name="other_fee" id="other_fee" value="{{ prescription.other_fee if prescription else '0' }}" step="0.01" min="0">
+                                <input type="number" class="form-control" name="other_fee" id="other_fee" value="0" step="0.01" min="0">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">合计</label>
                             <div class="input-group">
                                 <span class="input-group-text">¥</span>
-                                <input type="text" class="form-control" id="total_fee" value="{{ prescription.total_fee if prescription else '0' }}" readonly>
+                                <input type="text" class="form-control" id="total_fee" value="0" readonly>
                             </div>
                         </div>
                     </div>
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">保存</button>
-                        {% if prescription %}
-                        <a href="{{ url_for('prescription_print', id=prescription.id) }}" class="btn btn-outline-success" target="_blank">打印</a>
-                        {% endif %}
                         <a href="{{ url_for('prescriptions') }}" class="btn btn-outline-secondary">取消</a>
                     </div>
                 </form>
