@@ -46,7 +46,19 @@
 
                     <div class="mb-3">
                         <label class="form-label">过敏史</label>
-                        <textarea class="form-control" name="allergy" rows="2">{{ patient.allergy if patient else '' }}</textarea>
+                        <div class="mb-2">
+                            <small class="text-muted">常见过敏：</small>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="青霉素">青霉素</span>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="头孢">头孢</span>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="磺胺">磺胺</span>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="阿司匹林">阿司匹林</span>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="布洛芬">布洛芬</span>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="海鲜">海鲜</span>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="花粉">花粉</span>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="尘螨">尘螨</span>
+                            <span class="badge bg-light text-dark me-1 allergy-tag" style="cursor:pointer;" data-value="无">无</span>
+                        </div>
+                        <textarea class="form-control" name="allergy" id="allergy" rows="2">{{ patient.allergy if patient else '' }}</textarea>
                     </div>
 
                     <div class="d-flex gap-2">
@@ -58,4 +70,72 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 过敏史快捷选择
+document.querySelectorAll('.allergy-tag').forEach(tag => {
+    tag.addEventListener('click', function() {
+        const allergyInput = document.getElementById('allergy');
+        const value = this.dataset.value;
+        let current = allergyInput.value.trim();
+
+        // 分隔符包含顿号
+        const items = current ? current.split(/[,;，；、]/).map(s => s.trim()).filter(s => s) : [];
+
+        if (value === '无') {
+            // 点击"无"，清空内容并清除所有高亮
+            allergyInput.value = '无';
+            document.querySelectorAll('.allergy-tag').forEach(t => {
+                if (t.dataset.value !== '无') {
+                    t.classList.remove('bg-warning');
+                    t.classList.add('bg-light');
+                } else {
+                    t.classList.remove('bg-light');
+                    t.classList.add('bg-warning');
+                }
+            });
+            return;
+        }
+
+        // 如果已有"无"，先清除"无"的高亮
+        if (items.includes('无')) {
+            document.querySelector('.allergy-tag[data-value="无"]').classList.remove('bg-warning');
+            document.querySelector('.allergy-tag[data-value="无"]').classList.add('bg-light');
+            current = '';
+            items.length = 0;
+        }
+
+        if (items.includes(value)) {
+            // 已存在，则移除
+            const newItems = items.filter(s => s !== value);
+            allergyInput.value = newItems.join('、');
+            this.classList.remove('bg-warning');
+            this.classList.add('bg-light');
+        } else {
+            // 不存在，则添加
+            items.push(value);
+            allergyInput.value = items.join('、');
+            this.classList.remove('bg-light');
+            this.classList.add('bg-warning');
+        }
+    });
+});
+
+// 初始化已选过敏项的高亮
+window.addEventListener('DOMContentLoaded', function() {
+    const allergyInput = document.getElementById('allergy');
+    const current = allergyInput.value.trim();
+    if (current) {
+        const items = current.split(/[,;，；、]/).map(s => s.trim());
+        document.querySelectorAll('.allergy-tag').forEach(tag => {
+            if (items.includes(tag.dataset.value)) {
+                tag.classList.remove('bg-light');
+                tag.classList.add('bg-warning');
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
